@@ -15,6 +15,7 @@ glm(snoring~scores, family = binomial())
 #probit
 glm(snoring~scores, family=binomial(link="probit"))
 
+
 ###GLM for Count Data###
 card = c(1,2,2,5,6,7)
 income=c(1,1,2,2,3,4)
