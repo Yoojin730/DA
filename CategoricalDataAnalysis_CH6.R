@@ -27,11 +27,61 @@ belief[,5] <- c(74,71,15,13)
 belief <- data.frame(belief)
 names(belief) <- c("Race", "Gender", "Yes", "Un", "No")
 belief
-
 #Multinomial logit model
 fit1 <- vglm(cbind(Yes, Un, No) ~ Race + Gender + Race:Gender, multinomial, data=belief)
 summary(fit1)
 
 fit2 <- vglm(cbind(Yes, Un, No) ~ Race + Gender, multinomial, data=belief)
 summary(fit2)
+
+###Politic Example
+politic <- matrix(0,4,7)
+politic[,1] <- c(1,1,0,0)
+politic[,2] <- c(1,0,1,0)
+politic[,3] <- c(44,18,36,12)
+politic[,4] <- c(47,28,34,18)
+politic[,5] <- c(118,86,53,62)
+politic[,6] <- c(23,39, 18,45)
+politic[,7] <- c(32,48,23,51)
+politic <- data.frame(politic)
+names(politic) <- c("Gen", "Party", "VL", "SL", "M", "SC", "VC")
+politic
+
+#Regression Model
+VL <- c(44,18,36,12)
+SL <- c(47,28,34,18)
+M <- c(118,86,53,62)
+SC <- c(23,39, 18,45)
+VC <- c(32,48,23,51)
+y=c(rep(1,sum(VL)),rep(2,sum(SL)),rep(3,sum(M)),rep(4,sum(SC)),rep(5,sum(VC)))
+
+y
+
+x1=c(rep(c(1,1,0,0),VL),rep(c(1,1,0,0),SL),rep(c(1,1,0,0),M),rep(c(1,1,0,0),SC),rep(c(1,1,0,0),VC))
+
+x1
+x2=c(rep(c(1,0,1,0),VL),rep(c(1,0,1,0),SL),rep(c(1,0,1,0),M),rep(c(1,0,1,0),SC),rep(c(1,0,1,0),VC))
+fit3=lm(y~x2)
+summary(fit3)
+#Proportional Odds
+library(VGAM)
+fit2 <- vglm(cbind(VL, SL, M, SC, VC) ~ Party, family=cumulative(parallel=TRUE), politic)
+summary(fit2)
+#Unproportional
+fit2 <- vglm(cbind(VL, SL, M, SC, VC) ~ Party, family=cumulative(parallel=FALSE), politic)
+summary(fit2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
