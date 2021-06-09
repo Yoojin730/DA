@@ -43,7 +43,7 @@ fit1 = lm(y~x)
 
 summary(fit1)
 
-career <- matrix(0,2,7)
+career <- matrix(0,2,6)
 career[,1] <- c(1,0)
 career[,2] <- c(91, 42)
 career[,3] <- c(990, 350)
@@ -53,6 +53,14 @@ career[,6] <- c(451, 211)
 career <- data.frame(career)
 names(career) <- c("career","VN", "N", "A", "P", "VP")
 career
+
+library(VGAM)
+fit1 <- vglm(cbind(VN, N, A, P, VP) ~ career, multinomial, career)
+summary(fit1)
+
+fit1 <- vglm(cbind(VN, N, A, P, VP) ~ 1, family=cumulative(parallel=TRUE), career)
+summary(fit1)
+
 
 #Proportional Odds
 library(VGAM)
@@ -72,17 +80,28 @@ SEI = matrix(0,8,4)
 SEI[,1] <- c(1,1,1,1,0,0,0,0)
 SEI[,2] <- c(1,1,0,0,1,1,0,0)
 SEI[,3] <- c(1,0,1,0,1,0,1,0)
-SEI[,4] <- c(1105, 14, 411111, 483, 4624, 497, 157342, 1008)
+SEI[,4] <- c(14, 1105, 483, 411111, 497, 4624, 1008, 157342)
 SEI <- data.frame(SEI)
 names(SEI) <- c("S","E","I","COUNT")
 SEI
 
-f2 = glm(COUNT~S+E+I+S:E+S:I, family=poisson(link = 'log'), data=SEI)
+f2 = glm(COUNT~S+E+I+S:E+S:I+E:I, family=poisson(link = 'log'), data=SEI)
 summary(f2)
 
 
+f3 = glm(COUNT~S+E+I+S:E+S:I, family=poisson(link = 'log'), data=SEI)
+summary(f3)
 
+res = glm(COUNT~S*E*I, family=poisson(link="log"), data=SEI)
+step(res)
 
+f4 = glm(COUNT~S+E+S:E, family=poisson(link = 'log'), data=SEI)
+summary(f4)
 
+f5 = glm(COUNT~S+E, family=poisson(link = 'log'), data=SEI)
+summary(f5)
+
+f2 = glm(COUNT~S+E+I+S:E+S:I+E:I+S:E:I, family=poisson(link = 'log'), data=SEI)
+summary(f2)
 
 
